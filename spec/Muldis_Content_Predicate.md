@@ -9,7 +9,63 @@ This document is Muldis Content Predicate version 0.201.0.
 
 # SYNOPSIS
 
-*TODO.*
+## Muldis Object Notation (MUON)
+
+```
+    `Muldis_Content_Predicate
+    MCP version http://muldis.com 0.201.0 MCP
+    MCP script Unicode 2.1 UTF-8 MCP
+    MCP syntax Muldis_Object_Notation http://muldis.com 0.201.0 MCP
+    MCP model Muldis_Data_Language http://muldis.com 0.201.0 MCP
+    MCP comment "You know it, I hear that." MCP
+    Muldis_Content_Predicate`
+
+    \?%{
+        (name : "Jane Ives", birth_date : "1971-11-06",
+            phone_numbers : {"+1.4045552995", "+1.7705557572"}),
+        (name : "Layla Miller", birth_date : "1995-08-27", phone_numbers : {}),
+        (name : "岩倉 玲音", birth_date : "1984-07-06",
+            phone_numbers : {"+81.9072391679"}),
+    }
+```
+
+## SQL: Postgres
+
+```PLpgSQL
+    /* Muldis_Content_Predicate
+    MCP version http://muldis.com 0.201.0 MCP
+    MCP script Unicode 2.1 UTF-8 MCP
+    MCP syntax SQL https://postgresql.org 10.0 MCP
+    MCP model SQL https://postgresql.org 10.0 MCP
+    MCP comment "This, that, and the other." MCP
+    Muldis_Content_Predicate */
+
+    select * from (values
+        ('Jane Ives', '1971-11-06', array['+1.4045552995', '+1.7705557572']),
+        ('Layla Miller', '1995-08-27', array[]::text[]),
+        ('岩倉 玲音', '1984-07-06', array['+81.9072391679'])
+    ) as r (name, birth_date, phone_numbers)
+```
+
+## Perl: Pumpkin
+
+```Perl
+    # Muldis_Content_Predicate
+    # MCP version http://muldis.com 0.201.0 MCP
+    # MCP script Unicode 2.1 UTF-8 MCP
+    # MCP syntax Perl http://perlfoundation.org 5.26 MCP
+    # MCP model Perl http://perlfoundation.org 5.26 MCP
+    # MCP comment "Laziness, Impatience and Hubris." MCP
+    # Muldis_Content_Predicate
+
+    my $r = [
+        {name => 'Jane Ives', birth_date => '1971-11-06',
+            phone_numbers => ['+1.4045552995', '+1.7705557572']},
+        {name => 'Layla Miller', birth_date => '1995-08-27', phone_numbers => []},
+        {name => '岩倉 玲音', birth_date => '1984-07-06',
+            phone_numbers => ['+81.9072391679']},
+    ];
+```
 
 # DESCRIPTION
 
