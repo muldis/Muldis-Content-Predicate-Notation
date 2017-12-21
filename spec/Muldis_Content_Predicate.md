@@ -78,6 +78,186 @@ This is the official/original version by the authority Muldis Data Systems
 
 *TODO.*
 
+# GRAMMAR
+
+The format of the grammar itself seen in this document is proprietary as a
+whole and is influenced both by EBNF and Perl 6 rules; it is designed for
+human readability and is not meant to be consumed by a parser generator.
+
+Grammar:
+
+```
+    <parsing_unit> ::=
+        .*
+            <predicate_block>
+        .*
+
+    <predicate_block> ::=
+        Muldis_Content_Predicate
+            <predicate>*
+        Muldis_Content_Predicate
+
+    <predicate> ::=
+        .*
+            MCP
+                <sp>
+                    <name> <sp> [<term> % <sp>]+
+                <sp>
+            MCP
+        .*
+
+    <sp> ::=
+        [' ' | '\t' | '\n' | '\r']+
+
+    <name> ::=
+        version | script | syntax | model | comment
+
+    <term> ::=
+        <bare_term> | <quoted_term>
+
+    <bare_term> ::=
+        <-[ \x<0>..\x<1F> \x<20> \x<80>..\x<9F> ]>+
+
+    <quoted_term> ::=
+        '"'
+            <-[ \x<0>..\x<1F> \x<80>..\x<9F> ]>*
+        '"'
+```
+
+## version
+
+When a `<name>` is `version` then the subsequent `<term>` items declare, in
+order, the *authority* and *version number* of the fully-qualified name of
+the **Muldis Content Predicate** (**MCP**) specification that the
+`<predicate_block>` as a whole conforms to.
+See section **VERSIONING** for more on fully-qualified names.
+There may be multiple `version` typed `<predicate>`; when this is the case,
+it means the `<predicate_block>` conforms to every one of those versions.
+
+Examples:
+
+```
+    version http://muldis.com 0.201.0
+```
+
+## script
+
+When a `<name>` is `script` then the subsequent `<term>` items collectively
+indicate the primary *script* of the `<parsing_unit>` as a whole, meaning
+its character repertoire and/or character encoding and/or character
+normalization.  Under the assumption that a parser might be reading the
+`<parsing_unit>` as binary data or otherwise as unnormalized character
+data, declaring the *script* makes it completely unambiguous as to what
+characters it is to be treating the input as.
+
+For a simple example, a *script* of `ASCII` says every literal source code
+character is a 7-bit ASCII character (and representing any non-ASCII
+characters is being done with escape sequences), and this is recommended
+for any file that doesn't need to be something else. For various legacy
+8-bit formats the *script* can tell us if we're using `Latin1` or `CP1252`
+or `EBCDIC` etc.  For Unicode the *script* would have multiple parts, such
+as `Unicode 2.1 UTF-8 canon`, indicating expected repertoire, and encoding
+(useful more with ones lacking BOMs); but at the very least it is useful
+with normalization; if `compat` is declared then the source code is folded
+before it is parsed so possibly distinct literal characters in the original
+code are seen as identical character strings by the main parser, while
+`canon` would not do this folding.
+
+A parser would possibly scan through the same source code multiple times
+filtering by a variety of text encodings until it can read a
+`<predicate_block>` declaring the same encoding that the
+`<predicate_block>` is itself written in, and then from that point it would
+expect the whole file to be that declared encoding or it would consider the
+source code invalid.
+
+There may be multiple `script` typed `<predicate>`; when this is the case,
+it means the `<parsing_unit>` conforms to every one of those scripts,
+typically because only the common subsets of said were used.
+
+Examples:
+
+```
+    script ASCII
+
+    script Unicode 2.1 UTF-8
+
+    script Unicode 2.1 UTF-8 canon
+```
+
+## syntax
+
+When a `<name>` is `syntax` then the subsequent `<term>` items declare, in
+order, the *syntax base name*, *authority* and *version number* of the
+fully-qualified name of the language syntax specification, or faked
+stand-in name, that the `<parsing_unit>` as a whole conforms to.
+See section **VERSIONING** for more on fully-qualified names.
+
+There may be multiple `syntax` typed `<predicate>`; when this is the case,
+it means the `<parsing_unit>` conforms to every one of those syntaxes,
+typically because only the lowest common denominators of said were used.
+
+Examples:
+
+```
+    syntax Muldis_Object_Notation http://muldis.com 0.201.0
+
+    syntax Muldis_Object_Notation http://example.com 42
+
+    syntax SQL https://iso.org "ISO/IEC 9075-1:2016"
+
+    syntax SQL https://postgresql.org 10.0
+
+    syntax SQL https://oracle.com 12.2.0.1
+
+    syntax SQL https://sqlite.org 3.21
+
+    syntax Perl http://perlfoundation.org 5.26
+```
+
+## model
+
+When a `<name>` is `model` then the subsequent `<term>` items declare, in
+order, the *data model base name*, *authority* and *version number* of the
+fully-qualified name of the data model or type system specification, or
+faked stand-in name, that the `<parsing_unit>` as a whole represents values
+of, and influences what specific data types a parser maps data to.
+See section **VERSIONING** for more on fully-qualified names.
+
+There may be multiple `model` typed `<predicate>`; when this is the case,
+it means the `<parsing_unit>` conforms to every one of those data models,
+typically because only the lowest common denominators of said were used.
+
+Examples:
+
+```
+    model Muldis_Data_Language http://muldis.com 0.201.0
+
+    model Muldis_Data_Language http://example.com 42
+
+    model SQL https://postgresql.org 10.0
+
+    model SQL https://sqlite.org 3.21
+
+    model Perl http://perlfoundation.org 5.26
+```
+
+## comment
+
+When a `<name>` is `comment` then the subsequent single `<term>` item
+provides the text of a generic comment about either the `<predicate_block>`
+as a whole or about any individual other `<predicate>` that it is next to.
+While a *comment* could be used to talk about the `<parsing_unit>` as a
+whole or any part of it, the expectation is that the form of commenting
+source code native to its language would typically be used instead, at
+least where the language has such a feature.
+There may be multiple `comment` typed `<predicate>`.
+
+Examples:
+
+```
+    comment "You know it, I hear that."
+```
+
 # VERSIONING
 
 Every version of this specification document is expected to declare its own
@@ -184,6 +364,10 @@ maturity, for example production vs pre-production/beta/etc, so explicit
 markers of such can either be omitted or be based on other standards.
 However, a major version of zero should be considered either pre-production
 or that the authority expects frequent upcoming backwards-incompatible changes.*
+
+See also [http://design.perl6.org/S11.html#Versioning](
+http://design.perl6.org/S11.html#Versioning) which was the primary
+influence for the versioning scheme described above.
 
 # SEE ALSO
 
