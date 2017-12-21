@@ -76,13 +76,65 @@ The fully-qualified name of this document and specification is
 This is the official/original version by the authority Muldis Data Systems
 (`http://muldis.com`), version number `0.201.0` (matches the VERSION).
 
-*TODO.*
+**Muldis Content Predicate** specifies a generic format for metadata that
+makes source code and data more strongly typed, to improve the odds that a
+recipient can parse it correctly and interpret its meaning as the sender
+intended.  The main intended use case is with character data, particularly
+source code or serialized data in some programming language, where said
+language isn't easy to distinguish from others with casual and simple
+examination, and so benefits from extra information being provided.
+
+In this document, a *parsing unit* or *parsing unit subject* or *subject*
+is the primary source code or data itself that we care about, which
+generally takes the form in memory of a character string or binary string
+*S*; parsing a well-formed *S* results in some logical value *N*.
+Typically *N* comprises a *compilation unit* of the programming language in
+question, such as a *package* or *module* or *class*, but it might also be
+a value of some other type.
+
+A *parsing unit predicate* or *predicate* is a guide for *how* to
+unambiguously parse the *subject*, and generally takes the form in memory
+of a character string or binary string like the *subject*; it includes such
+details as a grammar version declaration and a text encoding declaration.
+**MCP** defines the format of a *predicate* in this scenario.
+
+When source code is kept in its own self-describing single file, as per
+library or project conventions for typical general-purpose programming
+languages or structured data files, the *parsing unit* is the file as a
+whole, with the *parsing unit predicate* being embedded within that as a
+form of in-band signalling, usually as the very first part of the file.
+
+In this combined-file situation, a primary role of the *predicate* is to
+serve as a "magic number" that identifies the file as being source code of
+a particular language.  Its secondary role is to explicitly state the
+character encoding and similar details of the file so that the file can be
+correctly converted from octets to character data which most of the
+language grammar assumes it is taking as input; this means the parser does
+not have to rely on heuristics or other methods of determining encoding
+that could be wrong.  Its tertiary role is to explicitly state what
+versions of the language grammar the author of the source code believes the
+latter is known to be compatible or incompatible with, so that the grammar
+can be more free to evolve without that leading to parsers wrongly
+interpreting code.
+
+When source code is not kept in its own self-describing file, typically
+when a source code repository is in use that provides context externally to
+each *parsing unit subject* on how to interpret it, then the *subject* and
+*predicate* are typically given to the parser as separate inputs, this
+being out-of-band signalling.  This is particularly likely in situations
+where a virtual machine environment interpreting the source code is a
+library of some host language that is feeding in the source code piecemeal
+(possibly generated), such as a typical DBMS client application may do.
+Such uses would be served by not having to provide the *predicate*
+boilerplate every time they want to run *subject* code, which often is very
+small itself.
 
 # GRAMMAR
 
 The format of the grammar itself seen in this document is proprietary as a
 whole and is influenced both by EBNF and Perl 6 rules; it is designed for
-human readability and is not meant to be consumed by a parser generator.
+human readability and is not meant to be consumed by a parser-generator,
+but it should have all the needed details to derive an executable parser.
 
 Grammar:
 
