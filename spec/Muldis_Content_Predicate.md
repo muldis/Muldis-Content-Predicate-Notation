@@ -5,7 +5,8 @@ Format for source code metadata
 
 # VERSION
 
-This document is Muldis Content Predicate version 0.201.0.
+The fully-qualified name of this document is
+`Muldis_Content_Predicate http://muldis.com 0.201.0`.
 
 # SYNOPSIS
 
@@ -74,7 +75,7 @@ This document is the human readable authoritative formal specification named
 The fully-qualified name of this document and specification is
 `Muldis_Content_Predicate http://muldis.com 0.201.0`.
 This is the official/original version by the authority Muldis Data Systems
-(`http://muldis.com`), version number `0.201.0` (matches the VERSION).
+(`http://muldis.com`), version number `0.201.0`.
 
 **Muldis Content Predicate** specifies a generic format for metadata that
 makes source code and data more strongly typed, to improve the odds that a
@@ -168,11 +169,11 @@ Grammar:
         <bare_term> | <quoted_term>
 
     <bare_term> ::=
-        <-[ \x<0>..\x<1F> \x<20> \x<80>..\x<9F> ]>+
+        <-[ \x<0>..\x<1F> \x<20> " \x<80>..\x<9F> ]>+
 
     <quoted_term> ::=
         '"'
-            <-[ \x<0>..\x<1F> \x<80>..\x<9F> ]>*
+            <-[ \x<0>..\x<1F> " \x<80>..\x<9F> ]>*
         '"'
 ```
 
@@ -255,7 +256,7 @@ Examples:
 
     syntax Muldis_Object_Notation http://example.com 42
 
-    syntax SQL https://iso.org "ISO/IEC 9075-1:2016"
+    syntax SQL https://iso.org "ISO/IEC 9075:2016"
 
     syntax SQL https://postgresql.org 10.0
 
