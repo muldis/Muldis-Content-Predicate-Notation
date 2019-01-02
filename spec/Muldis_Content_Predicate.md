@@ -6,7 +6,7 @@ Format for source code metadata
 # VERSION
 
 The fully-qualified name of this document is
-`Muldis_Content_Predicate http://muldis.com 0.201.0`.
+`Muldis_Content_Predicate http://muldis.com 0.300.0`.
 
 # SYNOPSIS
 
@@ -14,18 +14,18 @@ The fully-qualified name of this document is
 
 ```
     `Muldis_Content_Predicate
-    MCP version http://muldis.com 0.201.0 MCP
+    MCP version http://muldis.com 0.300.0 MCP
     MCP script Unicode 2.1 UTF-8 MCP
-    MCP syntax Muldis_Object_Notation http://muldis.com 0.201.0 MCP
-    MCP model Muldis_Data_Language http://muldis.com 0.201.0 MCP
+    MCP syntax Muldis_Object_Notation http://muldis.com 0.300.0 MCP
+    MCP model Muldis_Data_Language http://muldis.com 0.300.0 MCP
     MCP comment "You know it, I hear that." MCP
     Muldis_Content_Predicate`
 
     \?%{
-        (name : "Jane Ives", birth_date : "1971-11-06",
+        (name : "Jane Ives", birth_date : \@(1971,11,06,,,),
             phone_numbers : {"+1.4045552995", "+1.7705557572"}),
-        (name : "Layla Miller", birth_date : "1995-08-27", phone_numbers : {}),
-        (name : "岩倉 玲音", birth_date : "1984-07-06",
+        (name : "Layla Miller", birth_date : \@(1995,08,27,,,), phone_numbers : {}),
+        (name : "岩倉 玲音", birth_date : \@(1984,07,06,,,),
             phone_numbers : {"+81.9072391679"}),
     }
 ```
@@ -34,36 +34,41 @@ The fully-qualified name of this document is
 
 ```PLpgSQL
     /* Muldis_Content_Predicate
-    MCP version http://muldis.com 0.201.0 MCP
+    MCP version http://muldis.com 0.300.0 MCP
     MCP script Unicode 2.1 UTF-8 MCP
-    MCP syntax SQL https://postgresql.org 10.0 MCP
-    MCP model SQL https://postgresql.org 10.0 MCP
+    MCP syntax SQL https://postgresql.org 11.0 MCP
+    MCP model SQL https://postgresql.org 11.0 MCP
     MCP comment "This, that, and the other." MCP
     Muldis_Content_Predicate */
 
     select * from (values
-        ('Jane Ives', '1971-11-06', array['+1.4045552995', '+1.7705557572']),
-        ('Layla Miller', '1995-08-27', array[]::text[]),
-        ('岩倉 玲音', '1984-07-06', array['+81.9072391679'])
+        ('Jane Ives', '1971-11-06'::date, array['+1.4045552995', '+1.7705557572']),
+        ('Layla Miller', '1995-08-27'::date, array[]::text[]),
+        ('岩倉 玲音', '1984-07-06'::date, array['+81.9072391679'])
     ) as r (name, birth_date, phone_numbers)
 ```
 
-## Perl: Pumpkin
+## Perl 5
 
 ```Perl
     # Muldis_Content_Predicate
-    # MCP version http://muldis.com 0.201.0 MCP
+    # MCP version http://muldis.com 0.300.0 MCP
     # MCP script Unicode 2.1 UTF-8 MCP
-    # MCP syntax Perl http://perlfoundation.org 5.26 MCP
-    # MCP model Perl http://perlfoundation.org 5.26 MCP
+    # MCP syntax Perl http://perlfoundation.org 5.28 MCP
+    # MCP model Perl http://perlfoundation.org 5.28 MCP
     # MCP comment "Laziness, Impatience and Hubris." MCP
     # Muldis_Content_Predicate
 
+    use DateTime;
     my $r = [
-        {name => 'Jane Ives', birth_date => '1971-11-06',
+        {name => 'Jane Ives',
+            birth_date => DateTime->new(year=>1971,month=>11,day=>6),
             phone_numbers => ['+1.4045552995', '+1.7705557572']},
-        {name => 'Layla Miller', birth_date => '1995-08-27', phone_numbers => []},
-        {name => '岩倉 玲音', birth_date => '1984-07-06',
+        {name => 'Layla Miller',
+            birth_date => DateTime->new(year=>1995,month=>8,day=>27),
+            phone_numbers => []},
+        {name => '岩倉 玲音',
+            birth_date => DateTime->new(year=>1984,month=>7,day=>6),
             phone_numbers => ['+81.9072391679']},
     ];
 ```
@@ -73,9 +78,9 @@ The fully-qualified name of this document is
 This document is the human readable authoritative formal specification named
 **Muldis Content Predicate** (**MCP**).
 The fully-qualified name of this document and specification is
-`Muldis_Content_Predicate http://muldis.com 0.201.0`.
+`Muldis_Content_Predicate http://muldis.com 0.300.0`.
 This is the official/original version by the authority Muldis Data Systems
-(`http://muldis.com`), version number `0.201.0`.
+(`http://muldis.com`), version number `0.300.0`.
 
 **Muldis Content Predicate** specifies a generic format for metadata that
 makes source code and data more strongly typed, to improve the odds that a
@@ -132,10 +137,41 @@ small itself.
 
 # GRAMMAR
 
-The format of the grammar itself seen in this document is proprietary as a
-whole and is influenced both by EBNF and Perl 6 rules; it is designed for
-human readability and is not meant to be consumed by a parser-generator,
-but it should have all the needed details to derive an executable parser.
+The syntax and intended interpretation of the grammar itself seen in this
+document should match that of the user-defined grammars feature of the Perl
+6 (Raku) language, which is described by
+[https://docs.perl6.org/language/grammars](
+https://docs.perl6.org/language/grammars).
+
+A fundamental exception is that this document uses a proprietary shorthand
+in syntax for declaring each named grammar section.
+
+Every time you see this:
+
+```
+    <foo> ::=
+        ...
+```
+
+That is shorthand for this Perl 6 code:
+
+```
+    token foo
+    {
+        ...
+    }
+```
+
+The shorthand is intended to aid human readability of the grammar and is
+not meant to be consumed by a parser-generator, but it should have all the
+needed details to derive an executable parser.
+
+*This shorthand may be eliminated in favor of the full syntax.*
+
+See also the bundled actual Perl 6 module
+[hosts/Perl6/lib/Muldis/Reference/Content_Predicate.pm6](
+hosts/Perl6/lib/Muldis/Reference/Content_Predicate.pm6)
+which has the executable grammar written out in full.
 
 Grammar:
 
@@ -154,7 +190,7 @@ Grammar:
         .*
             MCP
                 <sp>
-                    <name> <sp> [<term> % <sp>]+
+                    <name> <sp> [<term>+ % <sp>]
                 <sp>
             MCP
         .*
@@ -169,11 +205,11 @@ Grammar:
         <bare_term> | <quoted_term>
 
     <bare_term> ::=
-        <-[ \x<0>..\x<1F> \x<20> " \x<80>..\x<9F> ]>+
+        <-[ \x[0]..\x[1F] \x[20] " \x[80]..\x[9F] ]>+
 
     <quoted_term> ::=
         '"'
-            <-[ \x<0>..\x<1F> " \x<80>..\x<9F> ]>*
+            <-[ \x[0]..\x[1F] " \x[80]..\x[9F] ]>*
         '"'
 ```
 
@@ -190,7 +226,7 @@ it means the `<predicate_block>` conforms to every one of those versions.
 Examples:
 
 ```
-    version http://muldis.com 0.201.0
+    version http://muldis.com 0.300.0
 ```
 
 ## script
@@ -252,19 +288,19 @@ typically because only the lowest common denominators of said were used.
 Examples:
 
 ```
-    syntax Muldis_Object_Notation http://muldis.com 0.201.0
+    syntax Muldis_Object_Notation http://muldis.com 0.300.0
 
     syntax Muldis_Object_Notation http://example.com 42
 
     syntax SQL https://iso.org "ISO/IEC 9075:2016"
 
-    syntax SQL https://postgresql.org 10.0
+    syntax SQL https://postgresql.org 11.0
 
     syntax SQL https://oracle.com 12.2.0.1
 
-    syntax SQL https://sqlite.org 3.21
+    syntax SQL https://sqlite.org 3.26
 
-    syntax Perl http://perlfoundation.org 5.26
+    syntax Perl http://perlfoundation.org 5.28
 ```
 
 ## model
@@ -283,15 +319,15 @@ typically because only the lowest common denominators of said were used.
 Examples:
 
 ```
-    model Muldis_Data_Language http://muldis.com 0.201.0
+    model Muldis_Data_Language http://muldis.com 0.300.0
 
     model Muldis_Data_Language http://example.com 42
 
-    model SQL https://postgresql.org 10.0
+    model SQL https://postgresql.org 11.0
 
-    model SQL https://sqlite.org 3.21
+    model SQL https://sqlite.org 3.26
 
-    model Perl http://perlfoundation.org 5.26
+    model Perl http://perlfoundation.org 5.28
 ```
 
 ## comment
@@ -435,7 +471,7 @@ Darren Duncan - darren@DarrenDuncan.net
 This file is part of the formal specification named
 **Muldis Content Predicate** (**MCP**).
 
-MCP is Copyright © 2002-2017, Muldis Data Systems, Inc.
+MCP is Copyright © 2002-2019, Muldis Data Systems, Inc.
 
 [http://www.muldis.com/](http://www.muldis.com/)
 
