@@ -65,6 +65,6 @@ grammar Muldis::Reference::Content_Predicate::Grammar
     }
 }
 
-grammar Muldis::Reference::Content_Predicate::Actions
+class Muldis::Reference::Content_Predicate::Actions
 {
 }

@@ -170,7 +170,7 @@ needed details to derive an executable parser.
 
 See also the bundled actual Perl 6 module
 [hosts/Perl6/lib/Muldis/Reference/Content_Predicate.pm6](
-hosts/Perl6/lib/Muldis/Reference/Content_Predicate.pm6)
+../hosts/Perl6/lib/Muldis/Reference/Content_Predicate.pm6)
 which has the executable grammar written out in full.
 
 Grammar:
