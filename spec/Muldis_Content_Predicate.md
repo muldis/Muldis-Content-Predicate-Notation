@@ -143,50 +143,33 @@ document should match that of the user-defined grammars feature of the Perl
 [https://docs.perl6.org/language/grammars](
 https://docs.perl6.org/language/grammars).
 
-A fundamental exception is that this document uses a proprietary shorthand
-in syntax for declaring each named grammar section.
-
-Every time you see this:
-
-```
-    <foo> ::=
-        ...
-```
-
-That is shorthand for this Perl 6 code:
-
-```
-    token foo
-    {
-        ...
-    }
-```
-
-The shorthand is intended to aid human readability of the grammar and is
-not meant to be consumed by a parser-generator, but it should have all the
-needed details to derive an executable parser.
-
-*This shorthand may be eliminated in favor of the full syntax.*
+Any references like `<foo>` in either the grammar itself or in the written
+documentation specifically refer to the corresponding grammar token `foo`.
 
 See also the bundled actual Perl 6 module
 [hosts/Perl6/lib/Muldis/Reference/Content_Predicate.pm6](
 ../hosts/Perl6/lib/Muldis/Reference/Content_Predicate.pm6)
-which has the executable grammar written out in full.
+which has an executable copy of the grammar.
 
 Grammar:
 
 ```
-    <parsing_unit> ::=
+    token parsing_unit
+    {
         .*
             <predicate_block>
         .*
+    }
 
-    <predicate_block> ::=
+    token predicate_block
+    {
         Muldis_Content_Predicate
             <predicate>*
         Muldis_Content_Predicate
+    }
 
-    <predicate> ::=
+    token predicate
+    {
         .*
             MCP
                 <sp>
@@ -194,23 +177,34 @@ Grammar:
                 <sp>
             MCP
         .*
+    }
 
-    <sp> ::=
+    token sp
+    {
         [' ' | '\t' | '\n' | '\r']+
+    }
 
-    <name> ::=
+    token name
+    {
         version | script | syntax | model | comment
+    }
 
-    <term> ::=
+    token term
+    {
         <bare_term> | <quoted_term>
+    }
 
-    <bare_term> ::=
+    token bare_term
+    {
         <-[ \x[0]..\x[1F] \x[20] " \x[80]..\x[9F] ]>+
+    }
 
-    <quoted_term> ::=
+    token quoted_term
+    {
         '"'
             <-[ \x[0]..\x[1F] " \x[80]..\x[9F] ]>*
         '"'
+    }
 ```
 
 ## version
@@ -482,16 +476,16 @@ License version 2 (AL2) as published by the Perl Foundation
 You should have received copies of the AL2 as part of the
 MCP distribution, in the file
 [LICENSE/artistic-2_0.txt](../LICENSE/artistic-2_0.txt); if not, see
-[http://www.perlfoundation.org/attachment/legal/artistic-2_0.txt](
-http://www.perlfoundation.org/attachment/legal/artistic-2_0.txt).
+[https://www.perlfoundation.org/artistic-license-20.html](
+https://www.perlfoundation.org/artistic-license-20.html).
 
 Any versions of MCP that you modify and distribute must carry prominent
 notices stating that you changed the files and the date of any changes, in
 addition to preserving this original copyright notice and other credits.
 
 While it is by no means required, the copyright holder of MCP would
-appreciate being informed any time you create a modified version of Muldis
-D that you are willing to distribute, because that is a practical way of
+appreciate being informed any time you create a modified version of MCP
+that you are willing to distribute, because that is a practical way of
 suggesting improvements to the standard version.
 
 # TRADEMARK POLICY
