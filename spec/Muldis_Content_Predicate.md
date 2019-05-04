@@ -15,7 +15,7 @@ The fully-qualified name of this document is
 ```
     `Muldis_Content_Predicate
     MCP version http://muldis.com 0.300.0 MCP
-    MCP script Unicode 2.1 UTF-8 MCP
+    MCP script text Unicode 2.1 UTF-8 MCP
     MCP syntax Muldis_Object_Notation http://muldis.com 0.300.0 MCP
     MCP model Muldis_Data_Language http://muldis.com 0.300.0 MCP
     MCP comment "You know it, I hear that." MCP
@@ -35,7 +35,7 @@ The fully-qualified name of this document is
 ```PLpgSQL
     /* Muldis_Content_Predicate
     MCP version http://muldis.com 0.300.0 MCP
-    MCP script Unicode 2.1 UTF-8 MCP
+    MCP script text Unicode 2.1 UTF-8 MCP
     MCP syntax SQL https://postgresql.org 11.0 MCP
     MCP model SQL https://postgresql.org 11.0 MCP
     MCP comment "This, that, and the other." MCP
@@ -53,7 +53,7 @@ The fully-qualified name of this document is
 ```Perl
     # Muldis_Content_Predicate
     # MCP version http://muldis.com 0.300.0 MCP
-    # MCP script Unicode 2.1 UTF-8 MCP
+    # MCP script text Unicode 2.1 UTF-8 MCP
     # MCP syntax Perl http://perlfoundation.org 5.28 MCP
     # MCP model Perl http://perlfoundation.org 5.28 MCP
     # MCP comment "Laziness, Impatience and Hubris." MCP
@@ -89,6 +89,8 @@ intended.  The main intended use case is with character data, particularly
 source code or serialized data in some programming language, where said
 language isn't easy to distinguish from others with casual and simple
 examination, and so benefits from extra information being provided.
+But **MCP** isn't limited to that and can be applied to non-character
+data formats as well.
 
 In this document, a *parsing unit* or *parsing unit subject* or *subject*
 is the primary source code or data itself that we care about, which
@@ -226,8 +228,8 @@ Examples:
 ## script
 
 When a `<name>` is `script` then the subsequent `<term>` items collectively
-indicate the primary *script* of the `<parsing_unit>` as a whole, meaning
-its character repertoire and/or character encoding and/or character
+indicate the primary *script* of (typically) the `<parsing_unit>` as a whole,
+meaning its character repertoire and/or character encoding and/or character
 normalization.  Under the assumption that a parser might be reading the
 `<parsing_unit>` as binary data or otherwise as unnormalized character
 data, declaring the *script* makes it completely unambiguous as to what
@@ -257,14 +259,23 @@ There may be multiple `script` typed `<predicate>`; when this is the case,
 it means the `<parsing_unit>` conforms to every one of those scripts,
 typically because only the common subsets of said were used.
 
+The first `<term>` item of a *script* is either `text` or `raw`; `text` is
+typical and means that the *script* is decribing the `<parsing_unit>` as a
+whole and considers that to be character data; in contrast, `raw` means
+that the `<parsing_unit>` as a whole is non-character or raw or binary
+data, and the other `<term>` items are describing the character encoding of
+only the `<predicate_block>` itself, as possibly embedded within said data.
+
 Examples:
 
 ```
-    script ASCII
+    script text ASCII
 
-    script Unicode 2.1 UTF-8
+    script text Unicode 2.1 UTF-8
 
-    script Unicode 2.1 UTF-8 canon
+    script text Unicode 2.1 UTF-8 canon
+
+    script raw Unicode 2.1 UTF-8
 ```
 
 ## syntax

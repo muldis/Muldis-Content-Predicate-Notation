@@ -2,7 +2,7 @@
 
 # Muldis_Content_Predicate
 # MCP version http://muldis.com 0.300.0 MCP
-# MCP script Unicode 2.1 UTF-8 MCP
+# MCP script text Unicode 2.1 UTF-8 MCP
 # MCP syntax Perl http://perlfoundation.org 5.28 MCP
 # MCP model Perl http://perlfoundation.org 5.28 MCP
 # MCP comment "Laziness, Impatience and Hubris." MCP
