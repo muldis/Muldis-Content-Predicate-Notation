@@ -48,7 +48,7 @@ The fully-qualified name of this document is
     ) as r (name, birth_date, phone_numbers)
 ```
 
-## Perl 5
+## Perl
 
 ```Perl
     # Muldis_Content_Predicate
@@ -140,17 +140,17 @@ small itself.
 # GRAMMAR
 
 The syntax and intended interpretation of the grammar itself seen in this
-document should match that of the user-defined grammars feature of the Perl
-6 (Raku) language, which is described by
-[https://docs.perl6.org/language/grammars](
-https://docs.perl6.org/language/grammars).
+document should match that of the user-defined grammars feature of the Raku
+language, which is described by
+[https://docs.raku.org/language/grammars](
+https://docs.raku.org/language/grammars).
 
 Any references like `<foo>` in either the grammar itself or in the written
 documentation specifically refer to the corresponding grammar token `foo`.
 
-See also the bundled actual Perl 6 module
-[hosts/Perl6/lib/Muldis/Reference/Content_Predicate.pm6](
-../hosts/Perl6/lib/Muldis/Reference/Content_Predicate.pm6)
+See also the bundled actual Raku module
+[hosts/Raku/lib/Muldis/Reference/Content_Predicate.pm6](
+../hosts/Raku/lib/Muldis/Reference/Content_Predicate.pm6)
 which has an executable copy of the grammar.
 
 Grammar:
@@ -459,8 +459,8 @@ markers of such can either be omitted or be based on other standards.
 However, a major version of zero should be considered either pre-production
 or that the authority expects frequent upcoming backwards-incompatible changes.*
 
-See also [http://design.perl6.org/S11.html#Versioning](
-http://design.perl6.org/S11.html#Versioning) which was the primary
+See also [http://design.raku.org/S11.html#Versioning](
+http://design.raku.org/S11.html#Versioning) which was the primary
 influence for the versioning scheme described above.
 
 # SEE ALSO
